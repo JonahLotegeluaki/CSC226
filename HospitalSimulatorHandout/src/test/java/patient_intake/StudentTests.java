@@ -29,7 +29,7 @@ public class StudentTests {
         assertEquals(false, reg.removePatient("P11"));
     }
 
-    // Verify that remove by index handles wrong values correctly
+    // Verify that remove by index handles wrong values correctly and without throwing exceptions
     @Test 
     void testRemoveByIndex() {
         PatientRegistry reg = new PatientRegistry();
@@ -50,7 +50,7 @@ public class StudentTests {
         for (Patient a : reg.getPatientRegistry()) System.out.println(a.toString());
     }
 
-    // Test that setAge() works correctly
+    // Test that setAge() works correctly, and accepts 120yrs but rejects 121 with the correct exception
     @Test 
     void testSetAge() {
         Patient p = new Patient("P29", "Monkey", "Gorilla", 20031, "Hungry", 0, "None", "Lobby", 1, "123yowrgfuyewrfg");
@@ -79,7 +79,7 @@ public class StudentTests {
         assertEquals(22033, reg.getPatientByID("P22").age);
     }
 
-    // Test if the JVM accepts this patient (i was out of ideas)
+    // Test if the JVM accepts this patient (i was out of ideas) (this is 7th test btw)
     @Test 
     void testIfHumanWillLive() {
         boolean alive = true;
