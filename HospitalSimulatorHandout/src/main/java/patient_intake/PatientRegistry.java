@@ -1,6 +1,10 @@
 package patient_intake;
 // Switch from using ArrayList to a flat array implementation for patient storage.
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Collections;
+
 public class PatientRegistry {
     // Flat array to store patients and a size field to track the number of stored patients.
     private Patient[] patientRegistry;
@@ -94,6 +98,13 @@ public class PatientRegistry {
         if (id == -1) return false;
         patientRegistry[id] = updatedPatient;
         return true;
+    }
+
+    // Sort patients in an array based on their patient ID
+    public static Patient[] sortByID(Patient[] arrin) {
+        List<Patient> arrcopy = Arrays.asList(arrin.clone());
+        Collections.sort(arrcopy);
+        return arrcopy.toArray(new Patient[arrcopy.size()]);
     }
     
     @Override

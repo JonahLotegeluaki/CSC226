@@ -1,7 +1,7 @@
 package patient_intake;
 import java.lang.IllegalArgumentException;
 
-public class Patient extends Person {
+public class Patient extends Person implements Comparable<Patient> {
     private String patientID;
     private String chiefComplaint;
     private int triageLevel;
@@ -111,5 +111,12 @@ public class Patient extends Person {
     public String toString() {
         return String.format("%5s %14s %-20s %3d yrs    complaint %-30s level %-5d stage %-20s rm %-8s arrived hour %-8d insurance ID %-20s\n", 
             patientID, firstName, lastName, age, chiefComplaint, triageLevel, currentStage, assignedRoom, arrivalHour, insuranceID);
+    }
+
+    // Implement Comparable so that Collections.sort can work for patientID
+    @Override
+    public int compareTo(Patient compare) {
+        String pid2 = compare.getPatientID();
+        return this.patientID.compareTo(pid2);
     }
 }
