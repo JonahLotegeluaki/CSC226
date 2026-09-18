@@ -1,7 +1,7 @@
 package triage_efficiency;
 
-import java.util.*;
 import patient_intake.Patient;
+import patient_intake.PatientRegistry;
 
 public class EfficiencyTester {
 
@@ -14,9 +14,11 @@ public class EfficiencyTester {
      * This method must run in O(n) time.
      */
     public Patient linearSearch(Patient[] patients, String pid) {
-        // TODO REQUIRED: Implement linear search.
         // Search the entire array in order and return the matching Patient.
-        return null; // Remove this line and implement the method.
+        for (Patient p : patients) {
+            if (p.getPatientID() == pid) return p;
+        }
+        return null;
     }
 
     /**
@@ -27,10 +29,23 @@ public class EfficiencyTester {
      *
      * This method must run in O(log n) time.
      */
+    // Implemented from https://en.wikipedia.org/wiki/Binary_search#Algorithm
     public Patient binarySearch(Patient[] patients, String pid) {
-        // TODO REQUIRED: Implement iterative binary search.
         // The array must be sorted by patientID before calling this method.
-        return null; // Remove this line and implement the method.
+        Patient[] sorted = PatientRegistry.sortByID(patients);
+        int L = 0, R = sorted.length - 1, m;
+        for (int i=0;i<1000;i++) {
+            if (L > R) return null;
+            m = L + Math.floorDiv(R - L, 2);
+            String mPid = sorted[m].getPatientID();
+            if (mPid == pid) return sorted[m];
+            if (mPid.compareTo(pid) < 0) {
+                L = m + 1;
+                continue;
+            }
+            R = m - 1;
+        }
+        return null;
     }
 
     /**
