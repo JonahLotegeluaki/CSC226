@@ -2,40 +2,44 @@ package week3;
 
 public class ArrayBoundedStack<T> implements StackInterface<T> {
     private final int DEFAULTCAP = 100;
-    private T[] elements;
-    private int topIndex=-1;
+    private T[] stack;
+    private int sp = -1;
 
     public ArrayBoundedStack(){
-        elements = (T[]) new Object[DEFAULTCAP];
+        stack = (T[]) new Object[DEFAULTCAP];
     }
     public ArrayBoundedStack(int maxSize){
-        elements = (T[]) new Object[maxSize];
+        stack = (T[]) new Object[maxSize];
     }
     public boolean isEmpty()
     {
-        //TODO: how do we determine if the stack is empty? Implement this method
+        if (sp == -1) return true;
         return false;
     }
 
     public boolean isFull()
     {
-        //TODO: How do we determine if the stack is full? Implement this method
+        if (sp == stack.length - 1) return true;
         return false;
     }
     
     public void push(T element)
     {
-       // TODO: How do we add an element to the stack? Implement this method
+        if (isFull()) return;
+        sp++;
+        stack[sp] = element;
     }
     
-    public void pop()
+    public T pop()
     {
-        // How do we remove an element from the stack? Implement this method
+        if (isEmpty()) return null;
+        sp--;
+        return stack[sp+1];
+
     }
     
-    public T top()
+    public T peek()
     {
-      // How do we return the top element of the stack without removing it? Implement this method
-      return null;   
+      return stack[sp];   
     }
 }
