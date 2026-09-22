@@ -119,4 +119,8 @@ public class Patient extends Person implements Comparable<Patient> {
         String pid2 = compare.getPatientID();
         return this.patientID.compareTo(pid2);
     }
+    public int compareTo(String compare) {
+        String pid2 = compare;
+        return this.patientID.compareTo(pid2);
+    }
 }
