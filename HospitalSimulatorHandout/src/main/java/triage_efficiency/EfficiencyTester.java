@@ -1,7 +1,7 @@
 package triage_efficiency;
 
 import patient_intake.Patient;
-import patient_intake.PatientRegistry;
+
 
 public class EfficiencyTester {
 
@@ -16,7 +16,7 @@ public class EfficiencyTester {
     public Patient linearSearch(Patient[] patients, String pid) {
         // Search the entire array in order and return the matching Patient.
         for (Patient p : patients) {
-            if (p.getPatientID() == pid) return p;
+            if (p.getPatientID().equals(pid)) return p;
         }
         return null;
     }
@@ -30,15 +30,15 @@ public class EfficiencyTester {
      * This method must run in O(log n) time.
      */
     // Implemented from https://en.wikipedia.org/wiki/Binary_search#Algorithm
+    // The array passed is assumed to be sorted before function call.
     public Patient binarySearch(Patient[] patients, String pid) {
-        // The array must be sorted by patientID before calling this method.
-        Patient[] sorted = PatientRegistry.sortByID(patients);
-        int L = 0, R = sorted.length - 1, m;
+        if (patients.length == 0) return null;
+        int L = 0, R = patients.length - 1,m;
         for (int i=0;i<1000;i++) {
             if (L > R) return null;
             m = L + Math.floorDiv(R - L, 2);
-            String mPid = sorted[m].getPatientID();
-            if (mPid == pid) return sorted[m];
+            String mPid = patients[m].getPatientID();
+            if (mPid.equals(pid)) return patients[m];
             if (mPid.compareTo(pid) < 0) {
                 L = m + 1;
                 continue;
@@ -48,6 +48,23 @@ public class EfficiencyTester {
         return null;
     }
 
+    // Configurable start parameters for use in exponential search
+    public Patient binarySearch(Patient[] patients, String pid, int low, int high) {
+        if (patients.length == 0) return null;
+        int L = low, R = high - 1, m;
+        for (int i=0;i<1000;i++) {
+            if (L > R) return null;
+            m = L + Math.floorDiv(R - L, 2);
+            String mPid = patients[m].getPatientID();
+            if (mPid.equals(pid)) return patients[m];
+            if (mPid.compareTo(pid) < 0) {
+                L = m + 1;
+                continue;
+            }
+            R = m - 1;
+        }
+        return null;
+    }
     /**
      * OPTIONAL (+5%): Implement a different O(log n) search algorithm.
      *
@@ -61,26 +78,49 @@ public class EfficiencyTester {
      * - where you learned about it
      * - why it works
      */
+    // OPTIONAL Exponential search
+    // From https://en.wikipedia.org/wiki/Exponential_search#Algorithm
+    // Exponentially increases the range in which the id should be found.
+    // Then performs a binary search within that narrowed range.
     public Patient logNSearch(Patient[] patients, String pid) {
-        // TODO OPTIONAL: Research and implement a second O(log n) algorithm.
-        // Cite your source and explain the approach in a comment before the logic.
-        return null; // Remove this line and implement the method.
+        if (patients.length == 0) return null;
+
+        // Step 1: Limit the part of the array the id is in
+        int bound = 1;
+        while (bound < patients.length && patients[bound].compareTo(pid) < 0) {
+            bound *= 2;
+        }
+
+        // Step 2: Binary search in this area
+        return binarySearch(patients, pid, bound/2, patients.length < bound ? patients.length : bound + 1);
     }
 
-    public void timeDemo() {
-        long startTime = System.nanoTime();
-        for (int i = 0; i < 100000; i++) {
-            int x = 5 + 5;
-        }
-        long endTime = System.nanoTime();
+    // Runs all 3 algorithms, logs their runtime, and checks if the nullness is correct
+    // The timing check is part of the OPTIONAL work
+    public void timeDemo(Patient[] list, String pid, boolean expectNull) {
+        long start = System.nanoTime();
+        Patient p = linearSearch(list, pid);
+        long end = System.nanoTime();
+        long linTime = end - start;
+        if (expectNull) System.out.println(p == null ? "Linear correctly null" : "Linear incorrectly not-null");
+        else System.out.println(p == null ? "Linear incorrectly null" : "Linear correctly not null");
 
-        System.out.println("The example addition took: " + (endTime - startTime) + " ns");
+        start = System.nanoTime();
+        p = binarySearch(list, pid);
+        end = System.nanoTime();
+        long binTime = end - start;
+        if (expectNull) System.out.println(p == null ? "Binary correctly null" : "Binary incorrectly not-null");
+        else System.out.println(p == null ? "Binary incorrectly null" : "Binary correctly not null");
+        
+        start = System.nanoTime();
+        p = logNSearch(list, pid);
+        end = System.nanoTime();
+        long lognTime = end - start;
+        if (expectNull) System.out.println(p == null ? "Exponential correctly null" : "Exponential incorrectly not-null");
+        else System.out.println(p == null ? "Exponential incorrectly null" : "Exponential correctly not null");
 
-        startTime = System.nanoTime();
-        for (int i = 0; i < 100000; i++) {
-            int x = 5 * 5;
-        }
-        endTime = System.nanoTime();
-        System.out.println("The example multiplication took: " + (endTime - startTime) + " ns");
+        System.out.printf("Searching %d patients for %s:\nLinear:      %d\nBinary:      %d\nExponential: %d\n\n",
+            list.length, pid, linTime, binTime, lognTime
+        );
     }
 }
