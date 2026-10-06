@@ -19,15 +19,13 @@ public class TreatmentHistory {
      * @return the newest record, or null when the log is empty
      */
     public TreatmentRecord undoLastAction() {
-        // TODO: Pop and return the newest record. Empty pop returns null.
-        return null;
+        return allRecords.pop();
     }
 
     /**
      * Return the complete log newest-first without changing the stack.
      */
     public String displayHistory() {
-        // TODO: Use the stack's top-to-bottom string representation.
-        return "[]";
+        return allRecords.toString();
     }
 }
