@@ -55,6 +55,17 @@ public class LinkedQueue<T> {
         return size;
     }
 
+    // OPTIONAL ===============
+    public boolean checkSize() {
+        int reccount = rec(0, front);
+        if (reccount != size) return false;
+        return true;
+    }
+    private int rec(int i, Node n) {
+        if (n == null) return i;
+        return rec(i+1, n.next);
+    }
+
     @Override
     public String toString() {
         if (isEmpty()) return "[]";
