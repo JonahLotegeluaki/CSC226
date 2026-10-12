@@ -7,6 +7,7 @@ public class EmergencyWaitingRoom {
     private LinkedQueue<Patient> level2;
     private LinkedQueue<Patient> level3;
     private LinkedQueue<Patient> level4;
+    private final int queueCapacity[] = {3, 5, 10, 10};
 
     public EmergencyWaitingRoom() {
         level1 = new LinkedQueue<>();
@@ -24,17 +25,22 @@ public class EmergencyWaitingRoom {
         if (patient == null) return false;
         int level = patient.getTriageLevel();
         if (level < 1 || level > 4) return false;
+        // really could do this more programatically but i dont feel like it lol
         switch (level) {
             case 1:
+                if (level1.size() == queueCapacity[0]) return false;
                 level1.enqueue(patient);
                 break;
             case 2:
+                if (level2.size() == queueCapacity[1]) return false;
                 level2.enqueue(patient);
                 break;
             case 3:
+                if (level3.size() == queueCapacity[2]) return false;
                 level3.enqueue(patient);
                 break;
             case 4:
+                if (level4.size() == queueCapacity[3]) return false;
                 level4.enqueue(patient);
         }
         return true;
