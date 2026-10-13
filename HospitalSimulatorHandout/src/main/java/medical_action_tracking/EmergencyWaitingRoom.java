@@ -7,6 +7,7 @@ public class EmergencyWaitingRoom {
     private LinkedQueue<Patient> level2;
     private LinkedQueue<Patient> level3;
     private LinkedQueue<Patient> level4;
+    // Necesarry for the optional bounded waiting lanes ==========
     private final int queueCapacity[] = {3, 5, 10, 10};
 
     public EmergencyWaitingRoom() {
@@ -25,7 +26,7 @@ public class EmergencyWaitingRoom {
         if (patient == null) return false;
         int level = patient.getTriageLevel();
         if (level < 1 || level > 4) return false;
-        // really could do this more programatically but i dont feel like it lol
+        // really could do this more programatically
         switch (level) {
             case 1:
                 if (level1.size() == queueCapacity[0]) return false;

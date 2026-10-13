@@ -65,6 +65,7 @@ public class LinkedQueue<T> {
         if (n == null) return i;
         return rec(i+1, n.next);
     }
+    // ==========================
 
     @Override
     public String toString() {

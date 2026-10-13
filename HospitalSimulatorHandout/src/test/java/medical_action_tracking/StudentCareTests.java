@@ -70,4 +70,22 @@ public class StudentCareTests {
         for (int i=0;i<5;i++) assertTrue(room.addPatient(new Patient(null, null, null, 0, null, 2, null, null, 0, null)));
         assertFalse(room.addPatient(new Patient(null, null, null, 0, null, 2, null, null, 0, null)));
     }
+    @Test 
+    void testWaitingRoomFIFO() {
+        EmergencyWaitingRoom room = new EmergencyWaitingRoom();
+        room.addPatient(new Patient("P001", null, null, 0, null, 1, null, null, 0, null));
+        room.addPatient(new Patient("P002", null, null, 0, null, 1, null, null, 0, null));
+        assertEquals("P001", room.nextPatient().getPatientID());
+        assertEquals("P002", room.nextPatient().getPatientID());
+    }
+    @Test 
+    void testWaitingRoomPriority() {
+        EmergencyWaitingRoom room = new EmergencyWaitingRoom();
+        room.addPatient(new Patient("P001", null, null, 0, null, 1, null, null, 0, null));
+        room.addPatient(new Patient("P002", null, null, 0, null, 1, null, null, 0, null));
+        room.addPatient(new Patient("P003", null, null, 0, null, 2, null, null, 0, null));
+        assertEquals(1, room.nextPatient().getTriageLevel());
+        assertEquals(1, room.nextPatient().getTriageLevel());
+        assertEquals(2, room.nextPatient().getTriageLevel());
+    }
 }
