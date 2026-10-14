@@ -16,6 +16,13 @@ public class Main {
             registry.addPatient(patient);
         }
 
+        // OPTIONAL ==================
+        int[] arrivalMinutes = {11, 18, 27};
+        int[] serviceMinutes = {16, 24, 21};
+        int[] waitMinutes = new int[3];
+        int clockMinute = 27;
+        // ===========================
+
         Patient[] patients = registry.getPatientRegistry();
         Patient searchedPatient = new EfficiencyTester().linearSearch(patients, "P002");
         System.out.println("Week 2 search found: " + searchedPatient);
@@ -26,9 +33,16 @@ public class Main {
         }
         while (!waitingRoom.isEmpty()) {
             Patient nextPatient = waitingRoom.nextPatient();
+            // OPTIONAL =========================================
+            int idNumber = Integer.parseInt(nextPatient.getPatientID().substring(1)) - 1;
+            waitMinutes[idNumber] = clockMinute - arrivalMinutes[idNumber];
+            clockMinute += serviceMinutes[idNumber];
+            // ==================================================
             System.out.println("Next patient: " + nextPatient.getPatientID()
-                    + " (triage level " + nextPatient.getTriageLevel() + ")");
+                    + " (triage level " + nextPatient.getTriageLevel() + "); waited " + waitMinutes[idNumber] + " minutes");
         }
+        double avg = (waitMinutes[0] + waitMinutes[1] + waitMinutes[2]) / 3;
+        System.out.printf("Average waiting time was %f minutes\n\n", avg);
 
         TreatmentHistory history = new TreatmentHistory();
         history.addTreatment("P002", "Initial assessment", "2026-09-27 09:00");

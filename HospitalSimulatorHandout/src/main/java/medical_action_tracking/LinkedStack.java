@@ -49,7 +49,6 @@ public class LinkedStack<T> {
 
     @Override
     public String toString() {
-        // TODO: Build [top, next, ...] by traversing the stack without changing it.
         if (isEmpty()) return "[]";
         Node n = top;
         StringBuilder sb = new StringBuilder("[");

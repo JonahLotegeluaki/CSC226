@@ -20,5 +20,5 @@ The operations performed by both have the same complexity.
 The array-based queue could have faster recall (especially in the case of toString()),
 being a contiguous memory block, while the linked-node version has to jump to
 nodes which could be spaced out across the program's entire address space.
-However, this is likely negligible; in addition, the linked-node version
+However, this time difference is likely negligible; in addition, the linked-node version
 is more intuitive and easier to understand.

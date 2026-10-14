@@ -70,7 +70,6 @@ public class LinkedQueue<T> {
     @Override
     public String toString() {
         if (isEmpty()) return "[]";
-        // TODO: Recursively build a string from front to rear without changing the queue.
         StringBuilder sb = new StringBuilder();
         sb.append('[');
         appendNodesRecursively(front, sb);
@@ -79,8 +78,6 @@ public class LinkedQueue<T> {
     }
 
     private void appendNodesRecursively(Node current, StringBuilder result) {
-        // TODO: Add the current node's data, then recursively visit current.next.
-        // TODO: Stop at the null-node base case.
         if (current == null) return;
         result.append(String.format(
             current.next == null ? "%s" : "%s, ",
