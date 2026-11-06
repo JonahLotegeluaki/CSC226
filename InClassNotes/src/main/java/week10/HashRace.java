@@ -34,6 +34,9 @@ public class HashRace {
         }
     }
 
+    // was gonna have MIN_VALUE be uninitialized
+    // and MAX_VALUE be deleted sentinel
+
     /**
      * LINEAR PROBING: if index is taken, try index+1, index+2, ... (wrap around with % tableSize).
      *
@@ -43,8 +46,42 @@ public class HashRace {
      * @return long[]{ inserted, collisions }   e.g. new long[]{100000, 412345}
      */
     public static long[] linear(long[] keys, int tableSize, ProgressListener progress) {
-        // TODO
-        return null;
+        int i = 0;
+        long inserted = 0, collisions = 0;
+        long[] table = new long[tableSize];
+        java.util.Arrays.fill(table, Long.MIN_VALUE);
+
+        for (long k : keys) {
+            if (i == PROGRESS_EVERY) {
+                progress.update(inserted, collisions);
+                i = 0;
+            } else i++;
+
+            int index = (int) (k % tableSize);
+            
+            if (table[index] == Long.MIN_VALUE || table[index] == Long.MAX_VALUE) {
+                table[index] = k;
+                inserted++;
+            }
+            else {
+                int skip = 0;
+                while(table[index] != Long.MIN_VALUE && table[index] != Long.MAX_VALUE) {
+                    if (skip == tableSize) {
+                        // Have looped the whole table
+                        break;
+                    }
+                    collisions++;
+                    skip++;
+                    index++;
+                }
+                if (skip == tableSize)
+                    continue;
+                table[index] = k;
+                inserted++;
+            }
+                
+        }
+        return new long[]{inserted, collisions};
     }
 
     /**
@@ -57,8 +94,37 @@ public class HashRace {
      * @return long[]{ inserted, collisions }   e.g. new long[]{100000, 412345}
      */
     public static long[] quadratic(long[] keys, int tableSize, ProgressListener progress) {
-        // TODO
-        return null;
+        int i = 0;
+        long inserted = 0, collisions = 0;
+        long[] table = new long[tableSize];
+        java.util.Arrays.fill(table, Long.MIN_VALUE);
+
+        for (long k : keys) {
+            if (i == PROGRESS_EVERY) {
+                progress.update(inserted, collisions);
+                i = 0;
+            } else i++;
+
+            int hash = Math.floorMod(k, tableSize);
+            int index = hash;
+            
+            if (table[index] == Long.MIN_VALUE || table[index] == Long.MAX_VALUE) {
+                table[index] = k;
+                inserted++;
+            }
+            else {
+                int jump = 1;
+                while(table[index] != Long.MIN_VALUE && table[index] != Long.MAX_VALUE) {
+                    collisions++;
+                    index = (int) ((hash + (long) jump * jump) % tableSize);
+                    jump++;
+                }
+                table[index] = k;
+                inserted++;
+            }
+                
+        }
+        return new long[]{inserted, collisions};
     }
 
     /**
@@ -71,7 +137,20 @@ public class HashRace {
      * @return long[]{ inserted, collisions }   e.g. new long[]{100000, 99999}
      */
     public static long[] bucket(long[] keys, int tableSize, ProgressListener progress) {
-        // TODO
-        return null;
+        int i = 0;
+        Node[] table = new Node[tableSize];
+        long inserted = 0, collisions = 0;
+
+        for (long k : keys) {
+            if (i % PROGRESS_EVERY == 0) progress.update(inserted, collisions);
+            int index = (int) (k % tableSize);
+            if (table[index] != null) collisions++;
+            Node n = new Node(k, table[index]);
+            table[index] = n;
+            inserted++;
+            i++;
+        }
+
+        return new long[]{inserted, collisions};
     }
 }
