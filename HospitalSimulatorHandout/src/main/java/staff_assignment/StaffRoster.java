@@ -13,44 +13,91 @@ public class StaffRoster {
     // Outer map groups staff by seniority; each inner set is sorted by StaffMember's ordering.
     private final TreeMap<Seniority, TreeSet<StaffMember>> tiers = new TreeMap<>();
 
-    // TODO: Add the staff member to the correct tier, and reject a duplicate staffId.
+    // Initialize the roster
+    public StaffRoster() {
+        for (Seniority s : Seniority.values()) {
+            tiers.put(s, new TreeSet<>());
+        }
+    }
+
+    // Add the staff member to the correct tier, and reject a duplicate staffId.
     public void addStaff(StaffMember staff) {
+        if (findById(staff.getStaffId()) == null)
+            tiers.get(staff.getSeniority()).add(staff);
+        else throw new IllegalArgumentException();
     }
 
-    // TODO: Pick the least-loaded staff member at or above "required", raise their load by 1, and return them.
+    // Pick the least-loaded staff member at or above "required", raise their load by 1, and return them.
     public StaffMember assign(Seniority required) {
-        return null;
+        java.util.ArrayList<StaffMember> l = new java.util.ArrayList<>();
+        // Picks the lowest from each set
+        for (Seniority s : Seniority.values()) {
+            if (s.compareTo(required) >= 0) // Get required seniority level
+                l.add(tiers.get(s).first());
+        }
+        // Finds whoever has the lowest in all
+        StaffMember m = l.get(0);
+        if (l.size() != 1) for (StaffMember mem : l)
+            if (mem.compareTo(m) < 0) m = mem;
+        // Add to the case load
+        changeLoad(m, m.getCaseLoad() + 1);
+        return m;
     }
 
-    // TODO: Lower the staff member's load by 1 (never below 0) and keep the tree ordered.
+    // Lower the staff member's load by 1 (never below 0) and keep the tree ordered.
     public void release(StaffMember staff) {
+        int load = staff.getCaseLoad();
+        if (load > 0)
+            changeLoad(staff, load - 1);
     }
 
-    // TODO: Return how many staff members are in the roster.
+    // Return how many staff members are in the roster.
     public int size() {
-        return 0;
+        int size = 0;
+        for (Seniority s : Seniority.values())
+            size += tiers.get(s).size();
+        return size;
     }
 
-    // TODO: Print each tier, most senior first, listing its staff in order.
+    // Print each tier, most senior first, listing its staff in order.
     public void displayRoster() {
+        for (Seniority s : Seniority.values()) {
+            for (StaffMember stf : tiers.get(s)) {
+                System.out.println(stf.toString());
+            }
+        }
     }
 
-    // TODO: Remove the member, set the new load, then add them back (the only safe way to change a load).
+    // Remove the member, set the new load, then add them back (the only safe way to change a load).
     private void changeLoad(StaffMember member, int newLoad) {
+        tiers.get(member.getSeniority()).remove(member);
+        member.setCaseLoad(newLoad);
+        tiers.get(member.getSeniority()).add(member);
     }
 
-    // TODO: Call assign(), record the treatment in history with the chosen staffId, and return that staff member.
+    // Call assign(), record the treatment in history with the chosen staffId, and return that staff member.
     public StaffMember assignTreatment(String patientID, String treatment, String timestamp, Seniority required) {
-        return null;
+        StaffMember m = assign(required);
+        history.addTreatment(patientID, treatment, timestamp, m.getStaffId());
+        return m;
     }
 
-    // TODO: Pop the globally most recent treatment with your Week 3 undo, release whoever performed it, and return them (null if none).
+    // Pop the globally most recent treatment with your Week 3 undo, release whoever performed it, and return them (null if none).
     public StaffMember undoLastAssignment() {
-        return null;
+        TreatmentRecord rec = history.undoLastAction();
+        if (rec == null) return null;
+        StaffMember m = findById(rec.getPerformedBy());
+        if (m == null) return null;
+        changeLoad(m, m.getCaseLoad() - 1);
+        return m;
     }
 
-    // TODO: Return the staff member with this staffId, or null if they are not in the roster.
+    // Return the staff member with this staffId, or null if they are not in the roster.
     private StaffMember findById(String staffId) {
+        for (Seniority s : Seniority.values())
+            for (StaffMember m : (StaffMember[]) tiers.get(s).toArray(new StaffMember[tiers.get(s).size()])) {
+                if (m.getStaffId() == staffId) return m;
+            }
         return null;
     }
 }
