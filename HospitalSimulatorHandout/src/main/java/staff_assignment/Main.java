@@ -1,5 +1,10 @@
 package staff_assignment;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Random;
+import java.util.TreeSet;
+
 import medical_action_tracking.TreatmentHistory;
 
 public class Main {
@@ -52,5 +57,45 @@ public class Main {
             roster.release(a1);
             roster.release(a2);
         }
+
+        // EXTENSION
+        // Structure comparison
+        TreeSet<StaffMember> ts = new TreeSet<>();
+        ArrayList<StaffMember> al = new ArrayList<>();
+        LinkedList<StaffMember> ll = new LinkedList<>();
+        Random r = new Random();
+        // Test for 100 insertions
+        long addtime100ts = timeOp(() -> {for (StaffMember m : newStaff(r, 100)) ts.add(m);});
+        long addtime100al = timeOp(() -> {for (StaffMember m : newStaff(r, 100)) {al.add(m); al.sort(null);}});
+        long addtime100ll = timeOp(() -> {for (StaffMember m : newStaff(r, 100)) {ll.add(m); ll.sort(null);}});
+        // Test for 1000
+        long addtime1000ts = timeOp(() -> {for (StaffMember m : newStaff(r, 1000)) ts.add(m);});
+        long addtime1000al = timeOp(() -> {for (StaffMember m : newStaff(r, 1000)) {al.add(m); al.sort(null);}});
+        long addtime1000ll = timeOp(() -> {for (StaffMember m : newStaff(r, 1000)) {ll.add(m); ll.sort(null);}});
+        // Test for 10000
+        long addtime10000ts = timeOp(() -> {for (StaffMember m : newStaff(r, 10000)) ts.add(m);});
+        long addtime10000al = timeOp(() -> {for (StaffMember m : newStaff(r, 10000)) {al.add(m); al.sort(null);}});
+        long addtime10000ll = timeOp(() -> {for (StaffMember m : newStaff(r, 10000)) {ll.add(m); ll.sort(null);}});
+        // Print
+        System.out.printf("100 Loops:\nTreeSet:    %d\nArrayList:  %d\nLinkedList: %d\n", addtime100ts, addtime100al, addtime100ll);
+        System.out.printf("1000 Loops:\nTreeSet:    %d\nArrayList:  %d\nLinkedList: %d\n", addtime1000ts, addtime1000al, addtime1000ll);
+        System.out.printf("10000 Loops:\nTreeSet:    %d\nArrayList:  %d\nLinkedList: %d\n", addtime10000ts, addtime10000al, addtime10000ll);
+    }
+    static long timeOp(Runnable fn) {
+        long start = System.nanoTime();
+        fn.run();
+        long end = System.nanoTime();
+        return end - start;
+    }
+    static StaffMember[] newStaff(Random rand, int n) {
+        StaffMember[] l = new StaffMember[n];
+        for (int i=0;i<n;i++) {
+            l[i] = new StaffMember(
+                "S" + rand.nextInt(100000), 
+                "",
+                Seniority.values()[rand.nextInt(Seniority.values().length)]);
+        }
+        return l;
     }
 }
+
