@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
-public class HW4Updates {
+public class HW4UpdatesTest {
     @Test 
     public void testHW4UpdatesToHW3() {
         TreatmentRecord tr = new TreatmentRecord("hufri", "chicken", "yesterday");
