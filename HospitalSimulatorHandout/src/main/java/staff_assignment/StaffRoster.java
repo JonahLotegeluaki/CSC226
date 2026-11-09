@@ -29,6 +29,7 @@ public class StaffRoster {
 
     // Pick the least-loaded staff member at or above "required", raise their load by 1, and return them.
     public StaffMember assign(Seniority required) {
+        if (this.size() == 0) return null;
         java.util.ArrayList<StaffMember> l = new java.util.ArrayList<>();
         // Picks the lowest from each set
         for (Seniority s : Seniority.values()) {
