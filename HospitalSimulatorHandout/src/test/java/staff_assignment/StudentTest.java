@@ -3,6 +3,8 @@ package staff_assignment;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.NoSuchElementException;
+
 public class StudentTest {
     
     // Test that an empty roster returns null from assign()
@@ -12,6 +14,7 @@ public class StudentTest {
         assertNull(r.assign(Seniority.TECH));
     }
 
+    // Test that the roster distributes the workload evenly
     @Test 
     void testRosterEvenWorkload() {
         StaffRoster r = new StaffRoster();
@@ -30,5 +33,13 @@ public class StudentTest {
         assertEquals(1, s1.getCaseLoad());
         assertEquals(1, s2.getCaseLoad());
         assertEquals(1, s3.getCaseLoad());
+    }
+
+    // Test that a release of a nonexistent staff member throws the correct exception
+    @Test 
+    void testNonexistentIDthrows() {
+        StaffRoster r = new StaffRoster();
+        StaffMember m = new StaffMember("S01", "John", Seniority.ATTENDING);
+        assertThrows(NoSuchElementException.class, () -> r.release(m));
     }
 }

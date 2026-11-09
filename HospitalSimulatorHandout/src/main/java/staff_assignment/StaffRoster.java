@@ -1,5 +1,6 @@
 package staff_assignment;
 
+import java.util.NoSuchElementException;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
@@ -33,9 +34,10 @@ public class StaffRoster {
         java.util.ArrayList<StaffMember> l = new java.util.ArrayList<>();
         // Picks the lowest from each set
         for (Seniority s : Seniority.values()) {
-            if (s.compareTo(required) >= 0) // Get required seniority level
+            if (s.compareTo(required) >= 0 && tiers.get(s).size() > 0) // Get required seniority level
                 l.add(tiers.get(s).first());
         }
+        if (l.size() == 0) throw new NoSuchElementException();
         // Finds whoever has the lowest in all
         StaffMember m = l.get(0);
         if (l.size() != 1) for (StaffMember mem : l)
@@ -47,6 +49,7 @@ public class StaffRoster {
 
     // Lower the staff member's load by 1 (never below 0) and keep the tree ordered.
     public void release(StaffMember staff) {
+        if (!tiers.get(staff.getSeniority()).contains(staff)) throw new NoSuchElementException();
         int load = staff.getCaseLoad();
         if (load > 0)
             changeLoad(staff, load - 1);
